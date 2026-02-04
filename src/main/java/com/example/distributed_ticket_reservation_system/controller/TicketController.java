@@ -23,4 +23,21 @@ public class TicketController {
     public List<Ticket> getTickets() {
         return ticketService.getAllTickets();
     }
+
+    @PutMapping("/{id}")
+    public Ticket updateTicket(@PathVariable Long id, @Valid @RequestBody Ticket ticketDetails) {
+        return ticketService.updateTicket(id, ticketDetails);
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteTicket(@PathVariable Long id) {
+        ticketService.deleteTicket(id);
+        return "Ticket deleted successfully";
+    }
+
+    // Endpoint to restore a soft-deleted ticket
+    @PostMapping("/{id}/restore")
+    public int restoreTicket(@PathVariable Long id) {
+        return ticketService.restoreTicket(id);
+    }
 }

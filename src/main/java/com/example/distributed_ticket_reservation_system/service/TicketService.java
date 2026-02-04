@@ -1,5 +1,6 @@
 package com.example.distributed_ticket_reservation_system.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import com.example.distributed_ticket_reservation_system.model.Ticket;
 import org.springframework.cache.annotation.CacheEvict;
@@ -27,11 +28,42 @@ public class TicketService {
         return ticketRepository.save(ticket);
     }
 
+    @Transactional
+    public int restoreTicket(Long id) {
+        int updated = ticketRepository.restoreById(id);
+
+        if (updated == 0) {
+            throw new RuntimeException("Ticket not found or already restored");
+        }
+
+        return updated;
+    }
+
     public Ticket createTicket(Ticket ticket) {
         return ticketRepository.save(ticket);
     }
 
     public List<Ticket> getAllTickets() {
         return ticketRepository.findAll();
+    }
+
+    public Ticket updateTicket(Long id, Ticket updatedDetails) {
+        // Find ticket or throw error if it doesn't exist
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+        ticket.setEventName(updatedDetails.getEventName());
+        ticket.setPrice(updatedDetails.getPrice());
+        ticket.setAvailableQuantity(updatedDetails.getAvailableQuantity());
+
+        return ticketRepository.save(ticket);
+    }
+
+    public void deleteTicket(Long id) {
+        if (!ticketRepository.existsById(id)) {
+            throw new RuntimeException("Cannot delete. Ticket not found with id: " + id);
+        }
+
+        ticketRepository.deleteById(id);
     }
 }

@@ -7,12 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tickets")
+@SQLDelete(sql = "UPDATE tickets SET deleted = true WHERE id=?")
+@SQLRestriction("deleted = false")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -38,6 +42,9 @@ public class Ticket {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
 
     @PrePersist
     protected void onCreate() {
