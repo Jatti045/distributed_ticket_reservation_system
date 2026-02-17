@@ -24,6 +24,11 @@ public class TicketController {
         return ticketService.getAllTickets();
     }
 
+    @GetMapping("/{id}")
+    public Ticket getTicketById(@PathVariable Long id) {
+        return ticketService.getTicketById(id);
+    }
+
     @PutMapping("/{id}")
     public Ticket updateTicket(@PathVariable Long id, @Valid @RequestBody Ticket ticketDetails) {
         return ticketService.updateTicket(id, ticketDetails);
